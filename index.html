@@ -13,8 +13,8 @@
   <script src="index.js"></script>
 </head>
 
-<body style="padding: 0; margin: 0; overflow: hidden;" onload="drawTri()" onclick="drawTri()">
-  <canvas id="Tri"></canvas>
+<body style="padding: 0; margin: 0; overflow: hidden;" onload="drawTri()">
+  <canvas id="Tri" onclick="toggleColorMode()"></canvas>
 
 </body>
 
@@ -22,12 +22,35 @@
 
 <script>
   // let pal = new ColorPallette(["#1B264F", "#3E6990", "#9BC1BC", "#C5F4E0", "#567568"])
+  let colors = {
+  bright: ["#eac435", "#345995", "#fb4d3d", "#20fc8f", "#ca1551"],
+  purp: ["#211a1d", "#6320ee", "#8075ff", "#f8f0fb", "#cad5ca"],
+  rainbow: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#8B00FF"],
+  drab: ["#D5573B", "#885053", "#777DA7", "#94C9A9", "#C6ECAE"],
+  mintPink: ["#173753", "#00fddc", "#fd3e81", "#30343f", "#0d1321"]
+
+  };
+  var randomColor = function (colorsObj) {
+    var keys = Object.keys(colorsObj)
+    return colorsObj[keys[ keys.length * Math.random() << 0]];
+};
+  let colorMode = 0;
+  let activeColor = randomColor(colors)
+  
+  function toggleColorMode(){
+    colorMode = (colorMode + 1)%2
+    drawTri();
+  }
+  function changeColor(){
+    activeColor = randomColor(colors);
+    drawTri();
+  }
   function drawTri() {
     let width = window.innerWidth;
     let height = window.innerHeight;
     let size = width > height ? height : width;
-    let pal = new ColorPallette(["#30343F", "#FD3E81", "#00FDDC", "#173753"])
-    let bg = "#0D1321"; // pal.random;
+    let pal = new ColorPallette(_.reverse(activeColor));
+    let bg =  pal.random;//"#0D1321"; 
     let st = new SierpinskiTri("Tri", width, height, bg);
     let points = st.DrawCenterTri(width / 2, height / 2, size, bg);
 
@@ -35,7 +58,11 @@
       let newPoints = [];
       _.forEach(points, function (point) {
         _.forEach(point.centers, function (center) {
-          newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size, pal.random));
+          if(colorMode === 0)
+            newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size, pal.random));
+          else if(colorMode === 1)
+            newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size, pal.colorBasedOnX((height / 2) - (size/2), (height / 2) + (size/2), center.y)));
+
         });
       });
       points = _.flatten(newPoints);
@@ -45,4 +72,6 @@
     }
   }
   window.onresize = drawTri;
+  setInterval(drawTri, 5000);
+  setInterval(changeColor, 5000);
 </script>
