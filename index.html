@@ -6,6 +6,7 @@
   <title>Sierpinsky Triangle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css"> -->
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js" integrity="sha256-7/yoZS3548fXSRXqc/xYzjsmuW3sFKzuvOCHd06Pmps=" crossorigin="anonymous"></script>
   <script src="index.js"></script>
 </head>
 <body>
@@ -15,8 +16,25 @@
 </html>
 
 <script>
-  let st = new SierpinskiTri("Tri", 400);
+  let size = 600;
+  let st = new SierpinskiTri("Tri", 600);
   // st.DrawCenterRect(200, 300, 50, "red");
-  st.DrawCenterTri(200,200, 400, "red");
-  st.DrawInvertedCenterTri(200, 300, 200, "black");
+  let points = st.DrawCenterTri(size/2,size/2, size, "green");
+
+  console.log(points);
+  while(true){
+    let newPoints = [];
+    _.forEach(points, function(point){
+      _.forEach(point.centers, function(center){
+          newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size));
+      });
+    });
+    points = _.flatten(newPoints);
+
+    console.log(points);
+    if(points[0].size < 3)
+      break;
+  }
+
+  //st.DrawInvertedCenterTri();
 </script>
