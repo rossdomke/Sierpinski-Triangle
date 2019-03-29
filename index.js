@@ -1,9 +1,13 @@
 class SierpinskiTri {
 
-  constructor(id, size){
+  constructor(id, width, height,color){
     this._canvas = document.getElementById(id);
-    this._canvas.height = size;
-    this._canvas.width = size;
+    this._canvas.height = height;
+    this._canvas.width = width;
+
+    let ctx = this.ctx;
+    ctx.fillStyle = color;
+    ctx.fillRect(0,0,width, height);
   }
 
   get ctx() {
@@ -33,9 +37,9 @@ class SierpinskiTri {
 
   }
 
-  DrawInvertedCenterTri(x,y,size){
+  DrawInvertedCenterTri(x,y,size, color){
     let ctx = this.ctx;
-    ctx.fillStyle = "black";
+    ctx.fillStyle = color;
     ctx.beginPath();
     y += size/2;
     ctx.moveTo(x - size/2,y - size/2);
@@ -56,3 +60,15 @@ class SierpinskiTri {
     ]
   }
 } 
+
+class ColorPallette{
+  constructor(colors){
+    this._colors = colors;
+  }
+
+  get random(){
+    let i = Math.floor(Math.random() * this._colors.length);
+    return this._colors[i];
+  }
+
+}

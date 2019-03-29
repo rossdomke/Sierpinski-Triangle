@@ -1,40 +1,47 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Sierpinsky Triangle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css"> -->
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js" integrity="sha256-7/yoZS3548fXSRXqc/xYzjsmuW3sFKzuvOCHd06Pmps=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js" integrity="sha256-7/yoZS3548fXSRXqc/xYzjsmuW3sFKzuvOCHd06Pmps="
+    crossorigin="anonymous"></script>
   <script src="index.js"></script>
 </head>
-<body>
-  <canvas id="Tri" style="border: solid black 1px;" ></canvas>
-  
+
+<body style="padding: 0; margin: 0; overflow: hidden;" onload="drawTri()">
+  <canvas id="Tri"></canvas>
+
 </body>
+
 </html>
 
 <script>
-  let size = 600;
-  let st = new SierpinskiTri("Tri", 600);
-  // st.DrawCenterRect(200, 300, 50, "red");
-  let points = st.DrawCenterTri(size/2,size/2, size, "green");
+  // let pal = new ColorPallette(["#1B264F", "#3E6990", "#9BC1BC", "#C5F4E0", "#567568"])
+  function drawTri() {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let size = width > height ? height : width;
+    let pal = new ColorPallette(["#30343F", "#FD3E81", "#00FDDC", "#173753"])
+    let bg = "#0D1321"; // pal.random;
+    let st = new SierpinskiTri("Tri", width, height, bg);
+    let points = st.DrawCenterTri(width / 2, height / 2, size, bg);
 
-  console.log(points);
-  while(true){
-    let newPoints = [];
-    _.forEach(points, function(point){
-      _.forEach(point.centers, function(center){
-          newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size));
+    while (true) {
+      let newPoints = [];
+      _.forEach(points, function (point) {
+        _.forEach(point.centers, function (center) {
+          newPoints.push(st.DrawInvertedCenterTri(center.x, center.y, point.size, pal.random));
+        });
       });
-    });
-    points = _.flatten(newPoints);
+      points = _.flatten(newPoints);
 
-    console.log(points);
-    if(points[0].size < 3)
-      break;
+      if (points[0].size < 3)
+        break;
+    }
   }
-
-  //st.DrawInvertedCenterTri();
+  window.onresize = drawTri;
 </script>
